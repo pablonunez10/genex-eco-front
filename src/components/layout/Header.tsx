@@ -92,18 +92,18 @@ export function Header() {
 
       {/* Cart Sidebar - Abre desde la derecha */}
       {isCartOpen && (
-        <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 animate-slide-in-right border-l border-gray-200">
+        <div className="fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 animate-slide-in-right border-l border-gray-200">
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Carrito de Compras
+            <div className="flex items-center justify-between px-4 py-3 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Carrito
               </h2>
               <button
                 onClick={() => setIsCartOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -117,7 +117,7 @@ export function Header() {
                 </svg>
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-6">
+            <div className="flex-1 overflow-y-auto px-4">
               <CartSheet />
             </div>
           </div>
