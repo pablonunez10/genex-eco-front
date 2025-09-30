@@ -4,9 +4,10 @@ import type { Product, CartItem } from '@/types'
 
 interface CartContextType {
   cart: CartItem[]
-  addToCart: (product: Product) => void
+  addToCart: (product: Product, isFinanced?: boolean, selectedMonths?: number, monthlyPayment?: number) => void
   removeFromCart: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
+  updateFinancing: (productId: string, isFinanced: boolean, selectedMonths?: number, monthlyPayment?: number) => void
   clearCart: () => void
   totalItems: number
   totalPrice: number
@@ -20,19 +21,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, isFinanced = false, selectedMonths?: number, monthlyPayment?: number) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id)
+      const existingItem = prevCart.find(
+        (item) => item.id === product.id &&
+        item.isFinanced === isFinanced &&
+        item.selectedMonths === selectedMonths
+      )
 
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === product.id
+          item.id === product.id &&
+          item.isFinanced === isFinanced &&
+          item.selectedMonths === selectedMonths
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
       }
 
-      return [...prevCart, { ...product, quantity: 1 }]
+      return [...prevCart, {
+        ...product,
+        quantity: 1,
+        isFinanced,
+        selectedMonths,
+        monthlyPayment
+      }]
     })
 
     // Abrir el carrito automáticamente al agregar un producto
@@ -56,6 +69,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  const updateFinancing = (productId: string, isFinanced: boolean, selectedMonths?: number, monthlyPayment?: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId
+          ? { ...item, isFinanced, selectedMonths, monthlyPayment }
+          : item
+      )
+    )
+  }
+
   const clearCart = () => {
     setCart([])
   }
@@ -73,6 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        updateFinancing,
         clearCart,
         totalItems,
         totalPrice,

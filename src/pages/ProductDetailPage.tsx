@@ -1,14 +1,17 @@
-import { useParams, Link } from '@tanstack/react-router'
-import { products } from '@/data/products.data'
-import { useCart } from '@/contexts/CartContext'
-import { formatPrice } from '@/utils'
-import { FinancingCalculator } from '@/components/features'
+import { useState } from "react";
+import { useParams, Link } from "@tanstack/react-router";
+import { products } from "@/data/products.data";
+import { useCart } from "@/contexts/CartContext";
+import { formatPrice, calculateMonthlyPayment } from "@/utils";
+// import { FinancingCalculator } from "@/components/features";
 
 export function ProductDetailPage() {
-  const { productId } = useParams({ strict: false })
-  const { addToCart } = useCart()
+  const { productId } = useParams({ strict: false });
+  const { addToCart } = useCart();
+  const [isFinanced, setIsFinanced] = useState(false);
+  const [selectedMonths, setSelectedMonths] = useState(3);
 
-  const product = products.find((p) => p.id === productId)
+  const product = products.find((p) => p.id === productId);
 
   if (!product) {
     return (
@@ -28,12 +31,21 @@ export function ProductDetailPage() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   const handleAddToCart = () => {
-    addToCart(product)
-  }
+    const monthlyPayment = isFinanced
+      ? calculateMonthlyPayment(product.price, selectedMonths)
+      : undefined;
+
+    addToCart(
+      product,
+      isFinanced,
+      isFinanced ? selectedMonths : undefined,
+      monthlyPayment
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
@@ -135,14 +147,14 @@ export function ProductDetailPage() {
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
                 {product.name}
               </h1>
-              <div className="flex items-baseline gap-4 mb-6">
+              <div className="flex items-baseline gap-4 mb-6 justify-center">
                 <p className="text-5xl font-bold text-green-600">
                   {formatPrice(product.price)}
                 </p>
               </div>
 
               <div className="border-t border-b border-gray-200 py-6 mb-6">
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-gray-700 mb-4">
                   <svg
                     className="w-5 h-5 text-green-600"
                     fill="none"
@@ -159,6 +171,66 @@ export function ProductDetailPage() {
                   <span className="font-medium">
                     Stock disponible: {product.stock} unidades
                   </span>
+                </div>
+
+                {/* Checkbox de método de pago */}
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isFinanced}
+                      onChange={(e) => setIsFinanced(e.target.checked)}
+                      className="w-5 h-5 text-green-600 rounded focus:ring-green-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      Pago financiado
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-2 ml-8">
+                    {isFinanced
+                      ? "Pagarás en cuotas mensuales"
+                      : "Pagarás el total al contado"}
+                  </p>
+
+                  {/* Selector de cuotas */}
+                  {isFinanced && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Cantidad de cuotas:{" "}
+                        <span className="text-green-600 font-bold">
+                          {selectedMonths} meses
+                        </span>
+                      </label>
+                      <input
+                        type="range"
+                        min="3"
+                        max="24"
+                        step="3"
+                        value={selectedMonths}
+                        onChange={(e) =>
+                          setSelectedMonths(Number(e.target.value))
+                        }
+                        className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>3 meses</span>
+                        <span>24 meses</span>
+                      </div>
+                      <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                        <span className="block text-xs text-gray-600 mb-1">
+                          Cuota mensual:
+                        </span>
+                        <span className="block text-2xl font-bold text-green-600">
+                          {formatPrice(
+                            calculateMonthlyPayment(
+                              product.price,
+                              selectedMonths
+                            )
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -180,7 +252,7 @@ export function ProductDetailPage() {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
+                {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
               </button>
 
               <div className="mt-6 grid grid-cols-3 gap-4">
@@ -248,10 +320,10 @@ export function ProductDetailPage() {
         </div>
 
         {/* Financing Calculator */}
-        <div className="max-w-2xl mx-auto">
+        {/* <div className="max-w-2xl mx-auto">
           <FinancingCalculator price={product.price} />
-        </div>
+        </div> */}
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useCart } from "@/contexts/CartContext";
 import { CartSheet } from "@/components/features/CartSheet";
 
@@ -12,6 +12,8 @@ const CATEGORIES = [
 
 export function Header() {
   const { totalItems, isCartOpen, setIsCartOpen } = useCart();
+  const searchParams = useSearch({ strict: false }) as { category?: string };
+  const currentCategory = searchParams?.category || "all";
 
   return (
     <>
@@ -42,15 +44,22 @@ export function Header() {
 
             {/* Tabs en el centro */}
             <nav className="flex items-center gap-1 flex-1 mx-8 overflow-x-auto">
-              {CATEGORIES.map((category) => (
-                <Link
-                  key={category.id}
-                  to={category.path}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 whitespace-nowrap [&.active]:text-green-600 [&.active]:bg-green-50"
-                >
-                  {category.name}
-                </Link>
-              ))}
+              {CATEGORIES.map((category) => {
+                const isActive = currentCategory === category.id;
+                return (
+                  <Link
+                    key={category.id}
+                    to={category.path}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap ${
+                      isActive
+                        ? "text-green-600 bg-green-50"
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    }`}
+                  >
+                    {category.name}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Carrito a la derecha */}
