@@ -1,22 +1,21 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   formatPrice,
   calculateMonthlyPayment,
-  calculateTotalWithInterest,
-  calculateInterestAmount,
-  FINANCING_OPTIONS,
-} from '@/utils'
+  // calculateTotalWithInterest,
+  // calculateInterestAmount,
+} from "@/utils";
 
 interface FinancingCalculatorProps {
-  price: number
+  price: number;
 }
 
 export function FinancingCalculator({ price }: FinancingCalculatorProps) {
-  const [months, setMonths] = useState(12)
+  const [months, setMonths] = useState(12);
 
-  const monthlyPayment = calculateMonthlyPayment(price, months)
-  const totalAmount = calculateTotalWithInterest(price, months)
-  const interestAmount = calculateInterestAmount(price, months)
+  const monthlyPayment = calculateMonthlyPayment(price, months);
+  // const totalAmount = calculateTotalWithInterest(price, months);
+  // const interestAmount = calculateInterestAmount(price, months);
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
@@ -25,6 +24,7 @@ export function FinancingCalculator({ price }: FinancingCalculatorProps) {
       </h3>
 
       <div className="space-y-6">
+        {/* Slider de cuotas */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-gray-700">
@@ -49,7 +49,8 @@ export function FinancingCalculator({ price }: FinancingCalculatorProps) {
           </div>
         </div>
 
-        <div className="space-y-3 rounded-lg bg-gray-50 p-4">
+        {/* Desglose de precio */}
+        {/* <div className="space-y-3 rounded-lg bg-gray-50 p-4">
           <div className="flex justify-between">
             <span className="text-sm text-gray-600">Precio contado:</span>
             <span className="font-medium">{formatPrice(price)}</span>
@@ -66,8 +67,9 @@ export function FinancingCalculator({ price }: FinancingCalculatorProps) {
             </span>
             <span className="font-semibold">{formatPrice(totalAmount)}</span>
           </div>
-        </div>
+        </div> */}
 
+        {/* Cuota mensual destacada */}
         <div className="rounded-lg border-2 border-green-500 bg-green-50 p-6 text-center">
           <p className="text-sm text-gray-600">Cuota mensual</p>
           <p className="mt-2 text-4xl font-bold text-green-600">
@@ -78,28 +80,13 @@ export function FinancingCalculator({ price }: FinancingCalculatorProps) {
           </p>
         </div>
 
+        {/* Notas importantes */}
         <div className="space-y-2 text-xs text-gray-500">
           <p>• Tasas de interés según plazo seleccionado</p>
           <p>• Sin gastos administrativos adicionales</p>
           <p>• Aprobación sujeta a evaluación crediticia</p>
         </div>
-
-        <div className="grid grid-cols-2 gap-2">
-          {FINANCING_OPTIONS.map((option) => (
-            <button
-              key={option.months}
-              onClick={() => setMonths(option.months)}
-              className={`py-2 px-3 rounded-lg text-sm font-medium transition duration-200 ${
-                months === option.months
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {option.months} meses
-            </button>
-          ))}
-        </div>
       </div>
     </div>
-  )
+  );
 }
