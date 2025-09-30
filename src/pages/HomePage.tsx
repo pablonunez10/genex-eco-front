@@ -27,7 +27,7 @@ export function HomePage() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Bienvenido a GenEx Eco
+            Bienvenido a Genex Tech
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Descubre soluciones sostenibles para un futuro más verde. Únete a
