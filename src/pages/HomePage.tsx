@@ -1,23 +1,25 @@
-import { useSearch } from '@tanstack/react-router'
-import { products } from '@/data/products.data'
-import { ProductCard } from '@/components/features'
+import { useSearch } from "@tanstack/react-router";
+import { products } from "@/data/products.data";
+import { ProductCard } from "@/components/features";
 
 const CATEGORY_NAMES: Record<string, string> = {
-  phones: 'Teléfonos',
-  security: 'Seguridad',
-  electronics: 'Electrónica',
-}
+  phones: "Teléfonos",
+  security: "Seguridad",
+  electronics: "Electrónica",
+};
 
 export function HomePage() {
-  const searchParams = useSearch({ strict: false }) as { category?: string }
-  const category = searchParams?.category
+  const searchParams = useSearch({ strict: false }) as { category?: string };
+  const category = searchParams?.category;
 
   // Filtrar productos por categoría
   const filteredProducts = category
     ? products.filter((product) => product.category === category)
-    : products
+    : products;
 
-  const categoryTitle = category ? CATEGORY_NAMES[category] || 'Productos' : 'Todos los Productos'
+  const categoryTitle = category
+    ? CATEGORY_NAMES[category] || "Productos"
+    : "Todos los Productos";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
@@ -32,18 +34,34 @@ export function HomePage() {
             nuestra misión de crear un mundo ambientalmente consciente a través
             de tecnología innovadora y acción comunitaria.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               Comenzar
             </button>
             <button className="border-2 border-green-600 text-green-600 hover:bg-green-50 font-semibold py-3 px-8 rounded-lg transition duration-200">
               Saber más
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+
+        {/* Products Section */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Productos Destacados
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Explora nuestra selección de productos de alta calidad
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-5xl mb-4">🌱</div>
             <h3 className="text-xl font-semibold mb-3 text-gray-900">
@@ -79,7 +97,10 @@ export function HomePage() {
             {categoryTitle}
           </h2>
           <p className="text-gray-600 mb-8">
-            {filteredProducts.length} {filteredProducts.length === 1 ? 'producto disponible' : 'productos disponibles'}
+            {filteredProducts.length}{" "}
+            {filteredProducts.length === 1
+              ? "producto disponible"
+              : "productos disponibles"}
           </p>
         </div>
 
@@ -114,5 +135,5 @@ export function HomePage() {
         )}
       </div>
     </div>
-  )
+  );
 }
