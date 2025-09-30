@@ -3,6 +3,14 @@ import { Link } from '@tanstack/react-router'
 import { useCart } from '@/contexts/CartContext'
 import { CartSheet } from '@/components/features/CartSheet'
 
+// Definir las categorías disponibles
+const CATEGORIES = [
+  { id: 'all', name: 'Todos', path: '/' },
+  { id: 'phones', name: 'Teléfonos', path: '/?category=phones' },
+  { id: 'security', name: 'Seguridad', path: '/?category=security' },
+  { id: 'electronics', name: 'Electrónica', path: '/?category=electronics' },
+]
+
 export function Header() {
   const { totalItems } = useCart()
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -11,8 +19,9 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo a la izquierda */}
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-white"
@@ -28,47 +37,48 @@ export function Header() {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-bold text-green-600">GenEx Eco</span>
+              <span className="text-xl font-bold text-green-600 whitespace-nowrap">
+                GenEx Eco
+              </span>
             </Link>
 
-            <nav className="flex items-center gap-6">
-              <Link
-                to="/"
-                className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 [&.active]:text-green-600"
-              >
-                Inicio
-              </Link>
-              <Link
-                to="/login"
-                className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 [&.active]:text-green-600"
-              >
-                Login
-              </Link>
-
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="relative p-2 text-gray-700 hover:text-green-600 transition-colors duration-200"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            {/* Tabs en el centro */}
+            <nav className="flex items-center gap-1 flex-1 mx-8 overflow-x-auto">
+              {CATEGORIES.map((category) => (
+                <Link
+                  key={category.id}
+                  to={category.path}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 whitespace-nowrap [&.active]:text-green-600 [&.active]:bg-green-50"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-                {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs font-semibold text-white">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
+                  {category.name}
+                </Link>
+              ))}
             </nav>
+
+            {/* Carrito a la derecha */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 text-gray-700 hover:text-green-600 transition-colors duration-200 flex-shrink-0"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-600 text-xs font-semibold text-white">
+                  {totalItems}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </header>
