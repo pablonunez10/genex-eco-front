@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useCart } from '@/contexts/CartContext'
 import { CartSheet } from '@/components/features/CartSheet'
@@ -12,8 +11,7 @@ const CATEGORIES = [
 ]
 
 export function Header() {
-  const { totalItems } = useCart()
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const { totalItems, isCartOpen, setIsCartOpen } = useCart()
 
   return (
     <>
@@ -83,14 +81,9 @@ export function Header() {
         </div>
       </header>
 
-      {/* Cart Sidebar */}
+      {/* Cart Sidebar - Abre desde la derecha */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
-            onClick={() => setIsCartOpen(false)}
-          />
-          <div className="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-xl">
+        <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 animate-slide-in-right border-l border-gray-200">
             <div className="h-full flex flex-col">
               <div className="flex items-center justify-between px-6 py-4 border-b">
                 <h2 className="text-xl font-semibold text-gray-900">
@@ -119,7 +112,6 @@ export function Header() {
                 <CartSheet />
               </div>
             </div>
-          </div>
         </div>
       )}
     </>

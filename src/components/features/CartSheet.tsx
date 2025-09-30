@@ -1,8 +1,15 @@
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/utils";
+import { useNavigate } from "@tanstack/react-router";
 
 export function CartSheet() {
-  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, setIsCartOpen } = useCart();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    setIsCartOpen(false);
+    navigate({ to: '/checkout' });
+  };
 
   if (cart.length === 0) {
     return (
@@ -112,7 +119,10 @@ export function CartSheet() {
           <span>Total:</span>
           <span className="text-green-600">{formatPrice(totalPrice)}</span>
         </div>
-        <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+        >
           Finalizar Compra
         </button>
       </div>
