@@ -1,7 +1,24 @@
+import { useSearch } from '@tanstack/react-router'
 import { products } from '@/data/products.data'
 import { ProductCard } from '@/components/features'
 
+const CATEGORY_NAMES: Record<string, string> = {
+  phones: 'Teléfonos',
+  security: 'Seguridad',
+  electronics: 'Electrónica',
+}
+
 export function HomePage() {
+  const searchParams = useSearch({ strict: false }) as { category?: string }
+  const category = searchParams?.category
+
+  // Filtrar productos por categoría
+  const filteredProducts = category
+    ? products.filter((product) => product.category === category)
+    : products
+
+  const categoryTitle = category ? CATEGORY_NAMES[category] || 'Productos' : 'Todos los Productos'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -59,18 +76,42 @@ export function HomePage() {
         {/* Products Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Productos Destacados
+            {categoryTitle}
           </h2>
           <p className="text-gray-600 mb-8">
-            Explora nuestra selección de productos de alta calidad
+            {filteredProducts.length} {filteredProducts.length === 1 ? 'producto disponible' : 'productos disponibles'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <svg
+              className="w-24 h-24 mx-auto text-gray-400 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
+            </svg>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              No hay productos en esta categoría
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Intenta explorar otras categorías
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
