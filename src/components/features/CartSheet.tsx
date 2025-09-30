@@ -1,8 +1,16 @@
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/utils";
+import { useNavigate } from "@tanstack/react-router";
 
 export function CartSheet() {
-  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, setIsCartOpen } =
+    useCart();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    setIsCartOpen(false);
+    navigate({ to: "/checkout" });
+  };
 
   if (cart.length === 0) {
     return (
@@ -45,6 +53,18 @@ export function CartSheet() {
               <p className="text-sm font-semibold text-green-600">
                 {formatPrice(item.price)}
               </p>
+              {item.isFinanced && item.monthlyPayment && (
+                <div className="text-xs bg-blue-50 text-green-700 px-2 py-1 rounded">
+                  <span className="font-medium">Financiado:</span>{" "}
+                  {item.selectedMonths} cuotas de{" "}
+                  {formatPrice(item.monthlyPayment)}
+                </div>
+              )}
+              {!item.isFinanced && (
+                <div className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                  <span className="font-medium">Al contado</span>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -112,7 +132,10 @@ export function CartSheet() {
           <span>Total:</span>
           <span className="text-green-600">{formatPrice(totalPrice)}</span>
         </div>
-        <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+        >
           Finalizar Compra
         </button>
       </div>
