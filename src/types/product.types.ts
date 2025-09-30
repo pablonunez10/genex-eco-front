@@ -10,6 +10,9 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number
+  isFinanced: boolean
+  selectedMonths?: number
+  monthlyPayment?: number
 }
 
 export interface FinancingOption {

@@ -8,12 +8,24 @@ import {
 
 interface FinancingCalculatorProps {
   price: number;
+  onMonthsChange?: (months: number, monthlyPayment: number) => void;
+  showAsOption?: boolean;
 }
 
-export function FinancingCalculator({ price }: FinancingCalculatorProps) {
+export function FinancingCalculator({
+  price,
+  onMonthsChange,
+}: FinancingCalculatorProps) {
   const [months, setMonths] = useState(12);
 
   const monthlyPayment = calculateMonthlyPayment(price, months);
+
+  const handleMonthsChange = (newMonths: number) => {
+    setMonths(newMonths);
+    if (onMonthsChange) {
+      onMonthsChange(newMonths, calculateMonthlyPayment(price, newMonths));
+    }
+  };
   // const totalAmount = calculateTotalWithInterest(price, months);
   // const interestAmount = calculateInterestAmount(price, months);
 
@@ -39,7 +51,7 @@ export function FinancingCalculator({ price }: FinancingCalculatorProps) {
             max="24"
             step="3"
             value={months}
-            onChange={(e) => setMonths(Number(e.target.value))}
+            onChange={(e) => handleMonthsChange(Number(e.target.value))}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
           />
 
