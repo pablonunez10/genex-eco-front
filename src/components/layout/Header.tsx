@@ -92,7 +92,7 @@ export function Header() {
 
       {/* Cart Sidebar - Abre desde la derecha */}
       {isCartOpen && (
-        <div className="fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 animate-slide-in-right border-l border-gray-200">
+        <div className="fixed inset-y-0 right-0 w-[318px] bg-white shadow-xl z-50 animate-slide-in-right border-l border-gray-200">
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between px-4 py-3 border-b">
               <h2 className="text-lg font-semibold text-gray-900">
