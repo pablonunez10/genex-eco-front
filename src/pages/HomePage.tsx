@@ -45,7 +45,7 @@ export function HomePage() {
         </div>
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-5xl mb-4">🌱</div>
             <h3 className="text-xl font-semibold mb-3 text-gray-900">
@@ -73,7 +73,7 @@ export function HomePage() {
               Construyendo una red de defensores ambientales
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Products Section */}
         <div className="mb-8">
