@@ -4,7 +4,7 @@ import { formatPrice, calculateMonthlyPayment } from "@/utils";
 import { useNavigate } from "@tanstack/react-router";
 
 export function CheckoutPage() {
-  const { cart, totalPrice, updateQuantity, removeFromCart, updateFinancing } = useCart();
+  const { cart, updateQuantity, removeFromCart, updateFinancing } = useCart();
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
@@ -18,7 +18,11 @@ export function CheckoutPage() {
     setExpandedItems(newExpanded);
   };
 
-  const handleFinancingToggle = (itemId: string, currentIsFinanced: boolean, price: number) => {
+  const handleFinancingToggle = (
+    itemId: string,
+    currentIsFinanced: boolean,
+    price: number
+  ) => {
     if (!currentIsFinanced) {
       // Cambiar a financiado con 12 meses por defecto
       const monthlyPayment = calculateMonthlyPayment(price, 12);
@@ -33,7 +37,11 @@ export function CheckoutPage() {
     }
   };
 
-  const handleMonthsChange = (itemId: string, months: number, price: number) => {
+  const handleMonthsChange = (
+    itemId: string,
+    months: number,
+    price: number
+  ) => {
     const monthlyPayment = calculateMonthlyPayment(price, months);
     updateFinancing(itemId, true, months, monthlyPayment);
   };
@@ -138,7 +146,13 @@ export function CheckoutPage() {
                           <input
                             type="checkbox"
                             checked={item.isFinanced}
-                            onChange={() => handleFinancingToggle(item.id, item.isFinanced, item.price)}
+                            onChange={() =>
+                              handleFinancingToggle(
+                                item.id,
+                                item.isFinanced,
+                                item.price
+                              )
+                            }
                             className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
                           />
                           <span className="text-xs font-medium text-gray-700">
@@ -149,7 +163,8 @@ export function CheckoutPage() {
                         {/* Mostrar información actual */}
                         {item.isFinanced && item.monthlyPayment ? (
                           <div className="mt-2 text-xs text-blue-700">
-                            {item.selectedMonths} cuotas de {formatPrice(item.monthlyPayment)}
+                            {item.selectedMonths} cuotas de{" "}
+                            {formatPrice(item.monthlyPayment)}
                           </div>
                         ) : (
                           <div className="mt-1 text-xs text-gray-500">
@@ -162,7 +177,10 @@ export function CheckoutPage() {
                       {item.isFinanced && expandedItems.has(item.id) && (
                         <div className="p-3 bg-blue-50 rounded space-y-2">
                           <label className="block text-xs font-medium text-gray-700">
-                            Cuotas: <span className="text-green-600 font-bold">{item.selectedMonths || 12}</span>
+                            Cuotas:{" "}
+                            <span className="text-green-600 font-bold">
+                              {item.selectedMonths || 12}
+                            </span>
                           </label>
                           <input
                             type="range"
@@ -170,7 +188,13 @@ export function CheckoutPage() {
                             max="24"
                             step="3"
                             value={item.selectedMonths || 12}
-                            onChange={(e) => handleMonthsChange(item.id, Number(e.target.value), item.price)}
+                            onChange={(e) =>
+                              handleMonthsChange(
+                                item.id,
+                                Number(e.target.value),
+                                item.price
+                              )
+                            }
                             className="w-full h-1 bg-green-200 rounded-lg appearance-none cursor-pointer"
                           />
                           <div className="flex justify-between text-xs text-gray-500">
@@ -260,20 +284,63 @@ export function CheckoutPage() {
                 Resumen del Pedido
               </h2>
               <div className="space-y-3 flex-shrink-0">
-                <div className="flex justify-between text-gray-600">
-                  <span>Subtotal:</span>
-                  <span>{formatPrice(totalPrice)}</span>
+                {/* Lista de productos */}
+                <div className="space-y-2 pb-3">
+                  {cart.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-start text-sm"
+                    >
+                      <div className="flex-1 pr-2">
+                        <p className="font-medium text-gray-900">{item.name}</p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-gray-500">
+                            Cantidad: {item.quantity}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {item.isFinanced ? (
+                          <div className="text-blue-700">
+                            <p className="font-semibold">
+                              {item.selectedMonths} cuotas
+                            </p>
+                            <p className="text-xs">
+                              {formatPrice(item.monthlyPayment || 0)} c/u
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="font-semibold text-gray-900">
+                            {formatPrice(item.price * item.quantity)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Envío:</span>
-                  <span className="text-green-600 font-medium">Gratis</span>
-                </div>
-                <div className="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
-                  <span>Total:</span>
-                  <span className="text-green-600">
-                    {formatPrice(totalPrice)}
-                  </span>
-                </div>
+
+                {/* Solo mostrar total si hay productos al contado */}
+                {cart.some((item) => !item.isFinanced) && (
+                  <>
+                    <div className="border-t pt-3 flex justify-between text-gray-600">
+                      <span>Envío:</span>
+                      <span className="text-green-600 font-medium">Gratis</span>
+                    </div>
+                    <div className="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
+                      <span>Total al Contado:</span>
+                      <span className="text-green-600">
+                        {formatPrice(
+                          cart
+                            .filter((item) => !item.isFinanced)
+                            .reduce(
+                              (sum, item) => sum + item.price * item.quantity,
+                              0
+                            )
+                        )}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Spacer */}
