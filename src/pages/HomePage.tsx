@@ -45,23 +45,7 @@ export function HomePage() {
         </div>
 
         {/* Features Section */}
-
-        {/* Products Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Productos Destacados
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Explora nuestra selección de productos de alta calidad
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="text-5xl mb-4">🌱</div>
             <h3 className="text-xl font-semibold mb-3 text-gray-900">
