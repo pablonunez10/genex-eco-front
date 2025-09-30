@@ -18,7 +18,7 @@ export const products: Product[] = [
     description:
       'iPhone 14 Pro con Dynamic Island, pantalla Super Retina XDR de 6.1", chip A16 Bionic, cámara principal de 48MP, grabación de video 4K, 256GB almacenamiento. Incluye cargador rápido y cable USB-C.',
     price: 9500000,
-    image: 'https://images.unsplash.com/photo-1592286927505-b7a8b4269020?w=500&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=500&h=500&fit=crop',
     category: 'phones',
     stock: 15,
   },
