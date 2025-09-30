@@ -1,8 +1,8 @@
-import { useCart } from '@/contexts/CartContext'
-import { formatPrice } from '@/utils'
+import { useCart } from "@/contexts/CartContext";
+import { formatPrice } from "@/utils";
 
 export function CartSheet() {
-  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart()
+  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
 
   if (cart.length === 0) {
     return (
@@ -22,7 +22,7 @@ export function CartSheet() {
         </svg>
         <p className="text-gray-500 text-center">Tu carrito está vacío</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -117,5 +117,5 @@ export function CartSheet() {
         </button>
       </div>
     </div>
-  )
+  );
 }
