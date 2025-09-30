@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import type { Product } from '@/types'
 import { useCart } from '@/contexts/CartContext'
 import { formatPrice } from '@/utils'
@@ -9,12 +10,18 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart()
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     addToCart(product)
   }
 
   return (
-    <div className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <Link
+      to="/product/$productId"
+      params={{ productId: product.id }}
+      className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 block"
+    >
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         <img
           src={product.image}
@@ -76,6 +83,6 @@ export function ProductCard({ product }: ProductCardProps) {
           Agregar al carrito
         </button>
       </div>
-    </div>
+    </Link>
   )
 }

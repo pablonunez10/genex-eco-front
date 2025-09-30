@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Header } from '@/components/layout'
-import { HomePage, LoginPage } from '@/pages'
+import { HomePage, LoginPage, ProductDetailPage } from '@/pages'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -30,7 +30,17 @@ const loginRoute = createRoute({
   component: LoginPage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute])
+const productDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/product/$productId',
+  component: ProductDetailPage,
+})
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  loginRoute,
+  productDetailRoute,
+])
 
 export const router = createRouter({ routeTree })
 
