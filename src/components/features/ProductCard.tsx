@@ -10,62 +10,64 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart()
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleAddToCart = () => {
     addToCart(product)
   }
 
   return (
-    <Link
-      to="/product/$productId"
-      params={{ productId: product.id }}
-      className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 block"
-    >
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        {product.stock < 5 && product.stock > 0 && (
-          <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-            ¡Últimas unidades!
-          </div>
-        )}
-        {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <span className="text-white text-lg font-semibold">Sin stock</span>
-          </div>
-        )}
-      </div>
-
-      <div className="p-4">
-        <span className="text-xs text-green-600 font-medium uppercase tracking-wider">
-          {product.category}
-        </span>
-        <h3 className="mt-1 text-lg font-semibold text-gray-900 line-clamp-2">
-          {product.name}
-        </h3>
-        <p className="mt-2 text-sm text-gray-600 line-clamp-2">
-          {product.description}
-        </p>
-
-        <div className="mt-4 flex items-center justify-between">
-          <div>
-            <p className="text-2xl font-bold text-gray-900">
-              {formatPrice(product.price)}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Stock: {product.stock} unidades
-            </p>
-          </div>
+    <div className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      <Link
+        to="/product/$productId"
+        params={{ productId: product.id }}
+        className="block"
+      >
+        <div className="relative aspect-square overflow-hidden bg-gray-100">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          {product.stock < 5 && product.stock > 0 && (
+            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+              ¡Últimas unidades!
+            </div>
+          )}
+          {product.stock === 0 && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <span className="text-white text-lg font-semibold">Sin stock</span>
+            </div>
+          )}
         </div>
 
+        <div className="p-4">
+          <span className="text-xs text-green-600 font-medium uppercase tracking-wider">
+            {product.category}
+          </span>
+          <h3 className="mt-1 text-lg font-semibold text-gray-900 line-clamp-2">
+            {product.name}
+          </h3>
+          <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+            {product.description}
+          </p>
+
+          <div className="mt-4 flex items-center justify-between">
+            <div>
+              <p className="text-2xl font-bold text-gray-900">
+                {formatPrice(product.price)}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Stock: {product.stock} unidades
+              </p>
+            </div>
+          </div>
+        </div>
+      </Link>
+
+      <div className="px-4 pb-4">
         <button
           onClick={handleAddToCart}
           disabled={product.stock === 0}
-          className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <svg
             className="w-5 h-5"
@@ -83,6 +85,6 @@ export function ProductCard({ product }: ProductCardProps) {
           Agregar al carrito
         </button>
       </div>
-    </Link>
+    </div>
   )
 }

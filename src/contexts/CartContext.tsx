@@ -10,12 +10,15 @@ interface CartContextType {
   clearCart: () => void
   totalItems: number
   totalPrice: number
+  isCartOpen: boolean
+  setIsCartOpen: (open: boolean) => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -31,6 +34,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       return [...prevCart, { ...product, quantity: 1 }]
     })
+
+    // Abrir el carrito automáticamente al agregar un producto
+    setIsCartOpen(true)
   }
 
   const removeFromCart = (productId: string) => {
@@ -70,6 +76,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        isCartOpen,
+        setIsCartOpen,
       }}
     >
       {children}

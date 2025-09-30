@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Header } from '@/components/layout'
-import { HomePage, LoginPage, ProductDetailPage } from '@/pages'
+import { HomePage, LoginPage, ProductDetailPage, CheckoutPage } from '@/pages'
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -36,10 +36,17 @@ const productDetailRoute = createRoute({
   component: ProductDetailPage,
 })
 
+const checkoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/checkout',
+  component: CheckoutPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   productDetailRoute,
+  checkoutRoute,
 ])
 
 export const router = createRouter({ routeTree })
