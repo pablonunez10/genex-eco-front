@@ -7,6 +7,7 @@ export function CheckoutPage() {
   const { cart, updateQuantity, removeFromCart, updateFinancing } = useCart();
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const toggleItemExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
@@ -44,6 +45,10 @@ export function CheckoutPage() {
   ) => {
     const monthlyPayment = calculateMonthlyPayment(price, months);
     updateFinancing(itemId, true, months, monthlyPayment);
+  };
+
+  const handleConfirmOrder = () => {
+    setShowSuccessModal(true);
   };
 
   if (cart.length === 0) {
@@ -347,13 +352,75 @@ export function CheckoutPage() {
               <div className="flex-1"></div>
 
               {/* Botón de confirmar */}
-              <button className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition duration-200 shadow-lg hover:shadow-xl flex-shrink-0">
+              <button
+                onClick={handleConfirmOrder}
+                className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition duration-200 shadow-lg hover:shadow-xl flex-shrink-0"
+              >
                 Confirmar Pedido
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal de éxito */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-md w-full p-8 transform transition-all">
+            {/* Icono de éxito */}
+            <div className="flex justify-center mb-6">
+              <div className="rounded-full bg-green-100 p-4">
+                <svg
+                  className="w-16 h-16 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Título */}
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">
+              ¡Pedido Confirmado!
+            </h2>
+
+            {/* Mensaje */}
+            <p className="text-gray-600 text-center mb-6">
+              Tu pedido ha sido procesado exitosamente. Recibirás un correo de confirmación con los detalles de tu compra.
+            </p>
+
+            {/* Información adicional */}
+            <div className="bg-green-50 rounded-lg p-4 mb-6">
+              <p className="text-sm text-green-800 text-center">
+                <strong>Envío gratis</strong> estimado en 3-5 días hábiles
+              </p>
+            </div>
+
+            {/* Botones */}
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => navigate({ to: "/" })}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
+              >
+                Volver a la tienda
+              </button>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
