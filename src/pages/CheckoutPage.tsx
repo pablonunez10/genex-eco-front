@@ -4,10 +4,18 @@ import { formatPrice, calculateMonthlyPayment } from "@/utils";
 import { useNavigate } from "@tanstack/react-router";
 
 export function CheckoutPage() {
-  const { cart, updateQuantity, removeFromCart, updateFinancing } = useCart();
+  const { cart, updateQuantity, removeFromCart, updateFinancing, clearCart } =
+    useCart();
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showDataForm, setShowDataForm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+  });
 
   const toggleItemExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
@@ -48,6 +56,13 @@ export function CheckoutPage() {
   };
 
   const handleConfirmOrder = () => {
+    setShowDataForm(true);
+  };
+
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí en el futuro se enviará a WhatsApp
+    setShowDataForm(false);
     setShowSuccessModal(true);
   };
 
@@ -363,6 +378,104 @@ export function CheckoutPage() {
         </div>
       </div>
 
+      {/* Modal de formulario de datos */}
+      {showDataForm && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Datos de Envío
+            </h2>
+
+            <form onSubmit={handleSubmitForm} className="space-y-4">
+              {/* Nombre */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre completo *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  placeholder="Juan Pérez"
+                />
+              </div>
+
+              {/* Teléfono */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Teléfono (WhatsApp) *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  placeholder="+52 123 456 7890"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Correo electrónico *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  placeholder="correo@ejemplo.com"
+                />
+              </div>
+
+              {/* Dirección */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Dirección de envío *
+                </label>
+                <textarea
+                  required
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
+                  placeholder="Calle, número, colonia, ciudad, estado, CP"
+                />
+              </div>
+
+              {/* Botones */}
+              <div className="flex flex-col gap-3 pt-4">
+                <button
+                  type="submit"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
+                >
+                  Finalizar Pedido
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDataForm(false)}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Modal de éxito */}
       {showSuccessModal && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
@@ -393,7 +506,8 @@ export function CheckoutPage() {
 
             {/* Mensaje */}
             <p className="text-gray-600 text-center mb-6">
-              Tu pedido ha sido procesado exitosamente. Recibirás un correo de confirmación con los detalles de tu compra.
+              Tu pedido ha sido procesado exitosamente. Recibirás un correo de
+              confirmación con los detalles de tu compra.
             </p>
 
             {/* Información adicional */}
@@ -406,7 +520,10 @@ export function CheckoutPage() {
             {/* Botones */}
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => navigate({ to: "/" })}
+                onClick={() => {
+                  clearCart();
+                  navigate({ to: "/" });
+                }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
               >
                 Volver a la tienda
