@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from '@tanstack/react-router'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function CreateAccountPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,7 +23,16 @@ export function CreateAccountPage() {
     }
 
     console.log('Account creation attempt:', formData)
-    // After successful account creation, navigate to home
+
+    // Create user object and login
+    const newUser = {
+      id: Date.now().toString(),
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+    }
+
+    login(newUser)
     navigate({ to: '/' })
   }
 

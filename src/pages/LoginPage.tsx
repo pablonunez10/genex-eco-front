@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "@tanstack/react-router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -11,7 +13,16 @@ export function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Login attempt:", formData);
-    // After successful login, navigate to home
+
+    // Mock user data - In real app, this would come from API
+    const mockUser = {
+      id: "1",
+      firstName: "Usuario",
+      lastName: "Demo",
+      email: formData.email,
+    };
+
+    login(mockUser);
     navigate({ to: "/" });
   };
 
