@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { authService } from '@/services'
 
@@ -343,6 +344,7 @@ export function CreateAccountPage() {
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
+              onClick={() => toast("Estamos trabajando en esta funcionalidad 🚧", { icon: "🚧" })}
               className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition duration-200"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -367,6 +369,7 @@ export function CreateAccountPage() {
             </button>
             <button
               type="button"
+              onClick={() => toast("Estamos trabajando en esta funcionalidad 🚧", { icon: "🚧" })}
               className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition duration-200"
             >
               <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
