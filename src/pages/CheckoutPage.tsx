@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice, calculateMonthlyPayment } from "@/utils";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 
 export function CheckoutPage() {
   const { cart, updateQuantity, removeFromCart, updateFinancing, clearCart } =
@@ -90,7 +90,7 @@ export function CheckoutPage() {
             Agrega productos para continuar con tu compra
           </p>
           <button
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => navigate("/")}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
           >
             Ir a la tienda
@@ -106,7 +106,7 @@ export function CheckoutPage() {
         {/* Breadcrumb */}
         <div className="mb-8">
           <button
-            onClick={() => navigate({ to: "/" })}
+            onClick={() => navigate("/")}
             className="text-green-600 hover:text-green-700 font-medium flex items-center gap-2"
           >
             <svg
@@ -522,7 +522,7 @@ export function CheckoutPage() {
               <button
                 onClick={() => {
                   clearCart();
-                  navigate({ to: "/" });
+                  navigate("/");
                 }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
               >

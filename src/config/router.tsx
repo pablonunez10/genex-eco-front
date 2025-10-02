@@ -1,58 +1,45 @@
-import {
-  createRouter,
-  createRoute,
-  createRootRoute,
-  Outlet,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Header } from '@/components/layout'
-import { HomePage, LoginPage, ProductDetailPage, CheckoutPage } from '@/pages'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { HomePage, LoginPage, ForgotPasswordPage, CreateAccountPage, ProductDetailPage, CheckoutPage } from '@/pages'
 
-const rootRoute = createRootRoute({
-  component: () => (
+function Layout() {
+  const location = useLocation()
+  const authPages = ['/login', '/forgot-password', '/create-account']
+  const showHeader = !authPages.includes(location.pathname)
+
+  return (
     <>
-      <Header />
-      <Outlet />
-      <TanStackRouterDevtools />
+      {showHeader && <Header />}
+      <Routes>
+        <Route path="/" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/create-account" element={<CreateAccountPage />} />
+        <Route path="/product/:productId" element={
+          <ProtectedRoute>
+            <ProductDetailPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/checkout" element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        } />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </>
-  ),
-})
+  )
+}
 
-const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: HomePage,
-})
-
-const loginRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/login',
-  component: LoginPage,
-})
-
-const productDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/product/$productId',
-  component: ProductDetailPage,
-})
-
-const checkoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/checkout',
-  component: CheckoutPage,
-})
-
-const routeTree = rootRoute.addChildren([
-  indexRoute,
-  loginRoute,
-  productDetailRoute,
-  checkoutRoute,
-])
-
-export const router = createRouter({ routeTree })
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
+export function Router() {
+  return (
+    <HashRouter>
+      <Layout />
+    </HashRouter>
+  )
 }

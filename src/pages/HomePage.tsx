@@ -1,4 +1,4 @@
-import { useSearch } from "@tanstack/react-router";
+import { useSearchParams } from "react-router-dom";
 import { products } from "@/data/products.data";
 import { ProductCard } from "@/components/features";
 
@@ -9,8 +9,8 @@ const CATEGORY_NAMES: Record<string, string> = {
 };
 
 export function HomePage() {
-  const searchParams = useSearch({ strict: false }) as { category?: string };
-  const category = searchParams?.category;
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category") || undefined;
 
   // Filtrar productos por categoría
   const filteredProducts = category
