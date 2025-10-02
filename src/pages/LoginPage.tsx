@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { authService } from "@/services";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -9,21 +10,37 @@ export function LoginPage() {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
+    setError("");
+    setIsLoading(true);
 
-    // Mock user data - In real app, this would come from API
-    const mockUser = {
-      id: "1",
-      firstName: "Usuario",
-      lastName: "Demo",
-      email: formData.email,
-    };
+    try {
+      const apiUser = await authService.login(formData);
 
-    login(mockUser);
-    navigate({ to: "/" });
+      // Convert API user to local user format
+      const user = {
+        id: apiUser.id,
+        firstName: apiUser.first_name,
+        lastName: apiUser.last_name,
+        email: apiUser.email,
+      };
+
+      login(user);
+      navigate("/");  // This will become /#/ with hash routing
+    } catch (err) {
+      console.error("Login error:", err);
+      const error = err as { response?: { data?: { error?: string } } };
+      setError(
+        error.response?.data?.error ||
+          "Error al iniciar sesión. Verifica tus credenciales."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +80,12 @@ export function LoginPage() {
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label
@@ -164,9 +187,10 @@ export function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Iniciar Sesión
+              {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </button>
           </form>
 

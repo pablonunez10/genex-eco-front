@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useParams, Link } from "@tanstack/react-router";
+import { useParams, Link } from "react-router-dom";
 import { products } from "@/data/products.data";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice, calculateMonthlyPayment } from "@/utils";
 // import { FinancingCalculator } from "@/components/features";
 
 export function ProductDetailPage() {
-  const { productId } = useParams({ strict: false });
+  const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
   const [isFinanced, setIsFinanced] = useState(false);
   const [selectedMonths, setSelectedMonths] = useState(3);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useSearch, useNavigate } from "@tanstack/react-router";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { CartSheet } from "@/components/features/CartSheet";
@@ -16,8 +16,8 @@ export function Header() {
   const { totalItems, isCartOpen, setIsCartOpen } = useCart();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const searchParams = useSearch({ strict: false }) as { category?: string };
-  const currentCategory = searchParams?.category || "all";
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get("category") || "all";
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   return (
@@ -111,7 +111,7 @@ export function Header() {
                         onClick={() => {
                           logout();
                           setIsUserMenuOpen(false);
-                          navigate({ to: '/login' });
+                          navigate('/login');
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
                       >

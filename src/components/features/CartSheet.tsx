@@ -1,6 +1,6 @@
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/utils";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 
 export function CartSheet() {
   const { cart, removeFromCart, updateQuantity, totalPrice, setIsCartOpen } =
@@ -9,7 +9,7 @@ export function CartSheet() {
 
   const handleCheckout = () => {
     setIsCartOpen(false);
-    navigate({ to: "/checkout" });
+    navigate("/checkout");
   };
 
   if (cart.length === 0) {

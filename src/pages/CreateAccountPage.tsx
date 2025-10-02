@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useNavigate, Link } from '@tanstack/react-router'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import { authService } from '@/services'
 
 export function CreateAccountPage() {
   const navigate = useNavigate()
@@ -13,27 +14,54 @@ export function CreateAccountPage() {
     confirmPassword: '',
     phone: '',
   })
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Las contraseñas no coinciden')
+      setError('Las contraseñas no coinciden')
       return
     }
 
-    console.log('Account creation attempt:', formData)
+    setIsLoading(true)
 
-    // Create user object and login
-    const newUser = {
-      id: Date.now().toString(),
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
+    try {
+      // Create username from email
+      const username = formData.email.split('@')[0]
+
+      const apiUser = await authService.register({
+        username,
+        email: formData.email,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone: formData.phone,
+        password: formData.password,
+      })
+
+      // Convert API user to local user format and login
+      const user = {
+        id: apiUser.id,
+        firstName: apiUser.first_name,
+        lastName: apiUser.last_name,
+        email: apiUser.email,
+      }
+
+      login(user)
+      navigate('/')
+    } catch (err) {
+      console.error('Registration error:', err)
+      const error = err as { response?: { data?: { email?: string[]; username?: string[] } } };
+      setError(
+        error.response?.data?.email?.[0] ||
+        error.response?.data?.username?.[0] ||
+        'Error al crear la cuenta. Intenta de nuevo.'
+      )
+    } finally {
+      setIsLoading(false)
     }
-
-    login(newUser)
-    navigate({ to: '/' })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +99,12 @@ export function CreateAccountPage() {
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* First Name & Last Name */}
             <div className="grid grid-cols-2 gap-4">
@@ -288,9 +322,10 @@ export function CreateAccountPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Crear Cuenta
+              {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
             </button>
           </form>
 

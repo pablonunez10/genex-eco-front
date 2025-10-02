@@ -23,16 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (savedUser) {
       return JSON.parse(savedUser)
     }
-
-    // Default user (Kiki) - in production, user must be logged in to access
-    const defaultUser = {
-      id: 'default',
-      firstName: 'Kiki',
-      lastName: '',
-      email: 'kiki@genextech.com',
-    }
-    localStorage.setItem('user', JSON.stringify(defaultUser))
-    return defaultUser
+    return null
   })
 
   const login = (userData: User) => {
