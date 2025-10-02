@@ -3,19 +3,27 @@ import {
   createRoute,
   createRootRoute,
   Outlet,
+  useMatchRoute,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { Header } from '@/components/layout'
-import { HomePage, LoginPage, ProductDetailPage, CheckoutPage } from '@/pages'
+import { HomePage, LoginPage, ForgotPasswordPage, CreateAccountPage, ProductDetailPage, CheckoutPage } from '@/pages'
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Header />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
+  component: () => {
+    const matchRoute = useMatchRoute()
+    const isLoginPage = matchRoute({ to: '/login' })
+    const isForgotPasswordPage = matchRoute({ to: '/forgot-password' })
+    const isCreateAccountPage = matchRoute({ to: '/create-account' })
+
+    return (
+      <>
+        {!isLoginPage && !isForgotPasswordPage && !isCreateAccountPage && <Header />}
+        <Outlet />
+        <TanStackRouterDevtools />
+      </>
+    )
+  },
 })
 
 const indexRoute = createRoute({
@@ -28,6 +36,18 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginPage,
+})
+
+const forgotPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/forgot-password',
+  component: ForgotPasswordPage,
+})
+
+const createAccountRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/create-account',
+  component: CreateAccountPage,
 })
 
 const productDetailRoute = createRoute({
@@ -45,6 +65,8 @@ const checkoutRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
+  forgotPasswordRoute,
+  createAccountRoute,
   productDetailRoute,
   checkoutRoute,
 ])

@@ -1,29 +1,39 @@
-import { useState } from "react";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { useState } from 'react'
+import { useNavigate, Link } from '@tanstack/react-router'
 
-export function LoginPage() {
-  const navigate = useNavigate();
+export function CreateAccountPage() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Login attempt:", formData);
-    // After successful login, navigate to home
-    navigate({ to: "/" });
-  };
+    e.preventDefault()
+
+    if (formData.password !== formData.confirmPassword) {
+      alert('Las contraseñas no coinciden')
+      return
+    }
+
+    console.log('Account creation attempt:', formData)
+    // After successful account creation, navigate to home
+    navigate({ to: '/' })
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 flex items-center justify-center p-4 py-8">
       <div className="max-w-md w-full">
         {/* Logo/Icon Section */}
         <div className="text-center mb-8">
@@ -38,21 +48,60 @@ export function LoginPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
               />
             </svg>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            ¡Bienvenido!
+            Crear cuenta
           </h2>
-          <p className="text-gray-600">
-            Inicia sesión para continuar en Genex Tech
-          </p>
+          <p className="text-gray-600">Únete a GenEx Eco y comienza a ahorrar</p>
         </div>
 
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* First Name & Last Name */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 text-gray-900"
+                  placeholder="Juan"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Apellido
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 text-gray-900"
+                  placeholder="Pérez"
+                />
+              </div>
+            </div>
+
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -89,6 +138,44 @@ export function LoginPage() {
               </div>
             </div>
 
+            {/* Phone */}
+            <div>
+              <label
+                htmlFor="phone"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
+                Teléfono
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 text-gray-900"
+                  placeholder="+1234567890"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -119,43 +206,80 @@ export function LoginPage() {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  minLength={8}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 text-gray-900"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
+                Confirmar Contraseña
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
                 <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer"
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  minLength={8}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200 text-gray-900"
+                  placeholder="••••••••"
                 />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700 cursor-pointer select-none"
-                >
-                  Recordarme
-                </label>
               </div>
+            </div>
 
-              <div className="text-sm">
-                <Link
-                  to="/forgot-password"
-                  className="font-medium text-green-600 hover:text-green-700 transition duration-200"
-                >
-                  ¿Olvidaste tu contraseña?
-                </Link>
-              </div>
+            {/* Terms and Conditions */}
+            <div className="flex items-start">
+              <input
+                id="terms"
+                name="terms"
+                type="checkbox"
+                required
+                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer mt-1"
+              />
+              <label
+                htmlFor="terms"
+                className="ml-2 block text-sm text-gray-700 cursor-pointer select-none"
+              >
+                Acepto los{' '}
+                <a href="#" className="text-green-600 hover:text-green-700 font-medium">
+                  Términos y Condiciones
+                </a>{' '}
+                y la{' '}
+                <a href="#" className="text-green-600 hover:text-green-700 font-medium">
+                  Política de Privacidad
+                </a>
+              </label>
             </div>
 
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              Iniciar Sesión
+              Crear Cuenta
             </button>
           </form>
 
@@ -165,9 +289,7 @@ export function LoginPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">
-                o continúa con
-              </span>
+              <span className="px-4 bg-white text-gray-500">o regístrate con</span>
             </div>
           </div>
 
@@ -195,9 +317,7 @@ export function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              <span className="ml-2 text-sm font-medium text-gray-700">
-                Google
-              </span>
+              <span className="ml-2 text-sm font-medium text-gray-700">Google</span>
             </button>
             <button
               type="button"
@@ -206,26 +326,24 @@ export function LoginPage() {
               <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
               </svg>
-              <span className="ml-2 text-sm font-medium text-gray-700">
-                Facebook
-              </span>
+              <span className="ml-2 text-sm font-medium text-gray-700">Facebook</span>
             </button>
           </div>
         </div>
 
-        {/* Sign Up Link */}
+        {/* Sign In Link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            ¿No tienes una cuenta?{" "}
+            ¿Ya tienes una cuenta?{' '}
             <Link
-              to="/create-account"
+              to="/login"
               className="font-semibold text-green-600 hover:text-green-700 transition duration-200"
             >
-              Regístrate aquí
+              Inicia sesión aquí
             </Link>
           </p>
         </div>
       </div>
     </div>
-  );
+  )
 }

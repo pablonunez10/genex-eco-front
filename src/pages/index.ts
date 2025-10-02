@@ -1,4 +1,6 @@
 export { HomePage } from './HomePage'
 export { LoginPage } from './LoginPage'
+export { ForgotPasswordPage } from './ForgotPasswordPage'
+export { CreateAccountPage } from './CreateAccountPage'
 export { ProductDetailPage } from './ProductDetailPage'
 export { CheckoutPage } from './CheckoutPage'
